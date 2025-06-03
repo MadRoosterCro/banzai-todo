@@ -18,6 +18,9 @@ services:
     environment:
       - MONGODB_URI=mongodb://root:example@mongo:27017/
       - MONGODB_DATABASE=banzai
+      - EMAIL_RECIPIENT=${EMAIL_RECIPIENT}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM}
     depends_on:
       - mongo
 

@@ -3,6 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import clientPromise from "../db";
 import { ObjectId, Document } from "mongodb";
 import { todoSchema, Todo, createTodoSchema } from "../schemas";
+import { sendCompletionEmail } from "@/utils/email";
 
 const DB_NAME = process.env.MONGODB_DATABASE || "banzai";
 
@@ -17,6 +18,22 @@ const toTodo = (doc: Document): Todo => {
         : doc.createdAt,
   };
 };
+
+async function checkAndSendCompletionEmail(db: any) {
+  const todos = await db.collection("todos").find().toArray();
+  const allCompleted =
+    todos.length > 0 && todos.every((todo: Document) => todo.completed);
+
+  if (allCompleted) {
+    try {
+      await sendCompletionEmail();
+      return true;
+    } catch (error) {
+      console.error("Failed to send completion email:", error);
+      return false;
+    }
+  }
+}
 
 export const todoRouter = router({
   getAll: publicProcedure.output(z.array(todoSchema)).query(async () => {
@@ -58,6 +75,7 @@ export const todoRouter = router({
       const objectId = new ObjectId(input.id);
       const todo = await db.collection("todos").findOne({ _id: objectId });
       if (!todo) throw new Error("Todo not found");
+
       const updated = await db
         .collection("todos")
         .findOneAndUpdate(
@@ -65,11 +83,15 @@ export const todoRouter = router({
           { $set: { completed: !todo.completed } },
           { returnDocument: "after" }
         );
+
       const resultTodo =
         updated && updated.value
           ? updated.value
           : await db.collection("todos").findOne({ _id: objectId });
+
       if (!resultTodo) throw new Error("Failed to update todo");
-      return toTodo(resultTodo);
+
+      const emailSent = await checkAndSendCompletionEmail(db);
+      return { ...toTodo(resultTodo), emailSent };
     }),
 });
