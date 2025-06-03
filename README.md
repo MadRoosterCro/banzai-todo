@@ -74,6 +74,9 @@ The app requires the following environment variables:
 
 - `MONGODB_URI`: MongoDB connection string
 - `MONGODB_DATABASE`: MongoDB database name
+- `EMAIL_RECIPIENT`: Email address to receive completion notifications
+- `RESEND_API_KEY`: API key for Resend.com email service
+- `EMAIL_FROM`: Email address to send notifications from
 
 Example `.env` file:
 
@@ -83,6 +86,24 @@ MONGODB_URI=mongodb://root:example@localhost:27017/
 
 # MongoDB database name
 MONGODB_DATABASE=example
+
+# Email configuration
+EMAIL_RECIPIENT=your-email@example.com
+RESEND_API_KEY=your-resend-api-key
+EMAIL_FROM=noreply@yourdomain.com
 ```
 
 These are automatically set in the Docker environment. For local development, create a `.env` file with these variables.
+
+### Quick Start for Email Notifications
+
+To receive an email when all todos are complete:
+
+1. Sign up at [Resend.com](https://resend.com) and get your free API key.
+2. Copy `.env.example` to `.env`.
+3. Set `EMAIL_RECIPIENT` to your own email address.
+4. Set `RESEND_API_KEY` to your Resend API key.
+5. Set `EMAIL_FROM` to `onboarding@resend.dev` (for testing without a custom domain).
+6. Complete all todos in the app to trigger the email.
+
+_Note: You can use any email address for `EMAIL_RECIPIENT`. For production use, verify your own domain in Resend and update `EMAIL_FROM` accordingly._

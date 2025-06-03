@@ -18,8 +18,11 @@ export default function Home() {
   });
 
   const toggleTodo = trpc.todo.toggle.useMutation({
-    onSettled: () => {
-      utils.todo.getAll.refetch();
+    onSuccess: (data) => {
+      utils.todo.getAll.invalidate();
+      if (data.emailSent) {
+        alert("All todos complete! Email sent.");
+      }
     },
   });
 
