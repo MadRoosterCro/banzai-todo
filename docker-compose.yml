@@ -17,6 +17,7 @@ services:
       - "3000:3000"
     environment:
       - MONGODB_URI=mongodb://root:example@mongo:27017/
+      - MONGODB_DATABASE=banzai
     depends_on:
       - mongo
 

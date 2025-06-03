@@ -4,6 +4,8 @@ import clientPromise from "../db";
 import { ObjectId, Document } from "mongodb";
 import { todoSchema, Todo, createTodoSchema } from "../schemas";
 
+const DB_NAME = process.env.MONGODB_DATABASE || "banzai";
+
 const toTodo = (doc: Document): Todo => {
   return {
     id: doc._id.toString(),
@@ -19,7 +21,7 @@ const toTodo = (doc: Document): Todo => {
 export const todoRouter = router({
   getAll: publicProcedure.output(z.array(todoSchema)).query(async () => {
     const client = await clientPromise;
-    const db = client.db("banzai");
+    const db = client.db(DB_NAME);
     const todos = await db
       .collection("todos")
       .find()
@@ -32,7 +34,7 @@ export const todoRouter = router({
     .input(createTodoSchema)
     .mutation(async ({ input }) => {
       const client = await clientPromise;
-      const db = client.db("banzai");
+      const db = client.db(DB_NAME);
       const now = new Date();
       const result = await db.collection("todos").insertOne({
         text: input.text,
@@ -51,7 +53,7 @@ export const todoRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       const client = await clientPromise;
-      const db = client.db("banzai");
+      const db = client.db(DB_NAME);
       if (!ObjectId.isValid(input.id)) throw new Error("Invalid ObjectId");
       const objectId = new ObjectId(input.id);
       const todo = await db.collection("todos").findOne({ _id: objectId });

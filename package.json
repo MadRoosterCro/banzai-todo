@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "docker:up": "docker compose up --build",
+    "docker:up": "docker compose up",
     "docker:down": "docker compose down",
+    "docker:cleanstart": "docker compose down -v && docker compose up -d",
     "test": "MONGODB_URI='mongodb://localhost:27017/' vitest"
   },
   "dependencies": {

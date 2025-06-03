@@ -7,7 +7,13 @@ git clone <your-repo-url>
 cd banzai-todo
 ```
 
-### 2. Set Node.js version (for local development)
+### 2. Install dependencies
+
+```sh
+npm install
+```
+
+### 3. Set Node.js version (for local development)
 
 If you use `nvm`, run:
 
@@ -16,7 +22,7 @@ nvm install 20.9.0
 nvm use
 ```
 
-### 3. Start the app and MongoDB with Docker Compose
+### 4. Start the app and MongoDB with Docker Compose
 
 This will build and run both the Next.js app and MongoDB in containers:
 
@@ -38,7 +44,6 @@ The app uses Vitest for running unit tests. The test suite includes:
 
 - Schema validation tests
 - tRPC router tests with mocked MongoDB
-- Component tests (using React Testing Library)
 
 #### Running Tests
 
@@ -62,3 +67,22 @@ Tests are located in the `src` directory alongside the code they test, following
 - tRPC
 - MongoDB
 - Docker
+
+### Environment Variables
+
+The app requires the following environment variables:
+
+- `MONGODB_URI`: MongoDB connection string
+- `MONGODB_DATABASE`: MongoDB database name
+
+Example `.env` file:
+
+```env
+# MongoDB connection string
+MONGODB_URI=mongodb://root:example@localhost:27017/
+
+# MongoDB database name
+MONGODB_DATABASE=example
+```
+
+These are automatically set in the Docker environment. For local development, create a `.env` file with these variables.
